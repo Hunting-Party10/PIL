@@ -1,24 +1,17 @@
 	.model	large
 	.stack	64
 
-validate MACRO	var,msg
-	LOCAL @@do,@@in,@@out
-	mov	bl,16
-	mov	cl,4
-	
-@@do:	mov	al,0
-
-@@in:	cmp	var[di],al
-	jz	@@out
-	inc	al
-	cmp	al,bl
-	jz	error
-	
-@@out: inc	di
-	cmp	di,cl
-	jnz	@@do
-	jmp	continue
-	endm
+validate MACRO	var
+	local	@@end,@@try
+	mov	cx,16
+	mov	bx,0
+@@try:	cmp	var,bl
+	jz	@@end
+	inc	bx
+	cmp	bx,cx
+	jnz	@@try
+	jmp	error
+@@end:	endm
 
 subthis MACRO	var
 	LOCAL	@@s1,@@s2,@@nt
@@ -62,8 +55,8 @@ input	MACRO	var
 	mov	ax,00h
 	mov	ah,01h
 	int	21h
-	;valid	al
 	subthis al
+	validate al
 	mov	var[di],al
 	endm
 
@@ -138,11 +131,13 @@ again:	;Enter 4 digit NOs
 	inc	di
 	input	hexip
 	print	nl
-	validate hexip
+	jmp	continue
 	
-error:	print	case12
+error:	
+	print	case12
 	jmp	again
-continue:print okay	
+	
+continue:	
 	ret
 hextoB	endp
 	
