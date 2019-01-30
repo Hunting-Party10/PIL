@@ -78,6 +78,7 @@ menu	db	'Conversion',10,13,'1)Hex to BCD',10,13,'2)BCD to HEX',10,13,'3)Exit',10
 menu2	db	'Enter Valid Choice',10,13,'$'
 case1	db	'Enter 4 Digit Hex:$'
 case12	db	10,13,'Please Re-enter hex Digit',10,13,'$'
+case13  db	10,13,'Conversion is :$'
 okay	db	10,13,'OKAY$'
 cho1	db	31h
 cho2	db	32h
@@ -158,18 +159,27 @@ loop1:	mov ax,0
 	
 	mov ax,0
 	mov cx,5
-loop2: 	mov ax,n
-	div ten
+	mov bx,10
+
+loop2:
+	mov dx,0 
+	mov ax,n
+	div bx
 	mov n,ax
 	push dx
 	loop loop2	
 	
+	print case13
+	mov	ax,0
+
 	mov cx,5
 loop3:	pop dx
 	add dl,30h
 	mov ah,02h
 	int 21h
-	loop loop3	
+	loop loop3
+
+	print nl	
 	ret
 hextoB	endp
 	
