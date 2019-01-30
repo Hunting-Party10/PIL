@@ -40,7 +40,7 @@ subthis MACRO	var
 	jmp	@@nt
 	
 	;input in number
-@@s2:	mov	bx,30
+@@s2:	mov	bx,48
 
 @@nt:	sub	al,bl
 	endm
@@ -68,7 +68,11 @@ input1	MACRO	var
 	endm
 	
 	.data
+n	dw	0
 hexip	db	4 DUP(0)
+conv	dw	4096
+steen	dw	16
+ten	dw	10
 nl	db	10,13,'$'
 menu	db	'Conversion',10,13,'1)Hex to BCD',10,13,'2)BCD to HEX',10,13,'3)Exit',10,13,'Enter Choice:$'
 menu2	db	'Enter Valid Choice',10,13,'$'
@@ -137,7 +141,35 @@ error:
 	print	case12
 	jmp	again
 	
-continue:	
+continue:
+	mov di,0
+	mov cx,04h
+	
+loop1:	mov ax,0
+	mov al,hexip[di]
+	mul conv
+	add ax,n
+	mov n,ax
+	inc di
+	mov ax,conv
+	div steen
+	mov conv,ax
+	loop loop1
+	
+	mov ax,0
+	mov cx,5
+loop2: 	mov ax,n
+	div ten
+	mov n,ax
+	push dx
+	loop loop2	
+	
+	mov cx,5
+loop3:	pop dx
+	add dl,30h
+	mov ah,02h
+	int 21h
+	loop loop3	
 	ret
 hextoB	endp
 	
