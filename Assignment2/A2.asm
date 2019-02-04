@@ -1,4 +1,4 @@
-	.model	large
+.model	large
 	.stack	64
 
 validatehex MACRO	var
@@ -261,6 +261,7 @@ do3:mov	ax,0
 	mov	ax,n2
 	div	steen
 	push dx
+	mov	n2,ax
 	loop do3
 
 	mov	cx,4
@@ -289,7 +290,8 @@ do4:
 	;check15
 	inc bx
 	cmp	dx,bx
-	jz add1
+	jnz add2
+	
 add1:
 	add dl,37h
 	jmp continue3
@@ -306,4 +308,4 @@ continue3:
 
 bcdtoH	endp
 	
-	end	main	
+	end	main
